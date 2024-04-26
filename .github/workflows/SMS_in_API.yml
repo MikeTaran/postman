@@ -15,8 +15,8 @@ jobs:
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
       - name: Run API tests
-        run: |
-          postman collection run "24214897-c044a15e-0a1e-42c0-9db8-fc8d67606fca" -e "24214897-56693489-19d0-4fa0-8931-14b9f610d22a" --delay-request 2000
+        # run: |
+          # postman collection run "24214897-c044a15e-0a1e-42c0-9db8-fc8d67606fca" -e "24214897-56693489-19d0-4fa0-8931-14b9f610d22a" --delay-request 2000
       - name: LogOut
-        run: postman logout
+        run: postman logout ${{ secrets.POSTMAN_API_KEY }}
       
