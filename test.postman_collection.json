@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "b57db1b5-7065-4943-87a0-301dcf881088",
+		"name": "test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24214897"
+	},
+	"item": [
+		{
+			"name": "Создание входящей транзакции Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"transaction_Id\", jsonData.data.id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var transaction_sum = Math.floor(1000 + Math.random() * 9000)\r",
+							"var bank_account_balance = Math.floor(Math.random() * 900000)\r",
+							"console.log(transaction_sum)\r",
+							"console.log(bank_account_balance)\r",
+							"pm.environment.set(\"transaction_sum\", transaction_sum);\r",
+							"pm.environment.set(\"bank_account_balance\", bank_account_balance);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\": \"{{$guid}}\",\n    \"amount\": \"{{transaction_sum}}\",\n    // \"amount\": \"2.01\",\n    \"bank\": \"1\",\n    \"customerName\": \"{{$randomFullName}}\",\n    \"customerIp\": \"{{$randomIP}}\",\n    \"customerUserId\":\"123001\",  // приоритет по созданию заявки\n    \"currencyCode\": \"RUB\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v2/order/in",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"order",
+						"in"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
