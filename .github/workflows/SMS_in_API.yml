@@ -1,0 +1,40 @@
+name: Automated API tests using Postman CLI
+
+on: 
+  # push:
+  workflow_dispatch:
+
+jobs:
+  automated-api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 1. Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: 2. Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      # - name: 3. Run SMS_in_API tests
+      #   run: |
+      #     postman collection run "24214897-c044a15e-0a1e-42c0-9db8-fc8d67606fca" -e "24214897-56693489-19d0-4fa0-8931-14b9f610d22a" --delay-request 2000
+      - name: 4. Run SMS_out_API tests
+        run: |
+          postman collection run "24214897-ce14dc21-1f2a-43ea-b0f4-d6c103f98ef1" -e "24214897-56693489-19d0-4fa0-8931-14b9f610d22a" --delay-request 2000
+      - name: 5. LogOut
+        run: postman logout ${{ secrets.POSTMAN_API_KEY }}
+      - name: 6. Send telegram message on push
+        uses: appleboy/telegram-action@master
+        if: always()
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+#           disable_web_page_preview: true
+          message: |
+            Message from GitHub CI Actions
+
+            Testing of the "SMS_in_API" is completed!
+
+            See allure-result testing: https://${{ github.actor }}.github.io/SeleniumCapital/
+            Tests Repository: ${{ github.repository }}
+
+      
